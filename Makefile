@@ -2,7 +2,7 @@ GPPPARAMS = -m32 -fno-use-cxa-atexit -nostdlib -fno-builtin -fno-rtti -fno-excep
 ASPARAMS = --32
 LDPARAMS = -melf_i386
 
-objects = loader.o kernel.o port.o gdt.o
+objects = loader.o kernel.o port.o interrupts.o interruptstubs.o gdt.o
 
 %.o : %.cpp
 	g++ $(GPPPARAMS) -o $@ -c $<
@@ -18,6 +18,20 @@ install: mykernel.bin
 run: mykernel.bin
 	(killall qemu-system-i386 && sleep 1) || true
 	qemu-system-i386 -kernel mykernel.bin &
-	
+
+mykernel.iso: mykernel.bin
+	mkdir -p iso/boot/grub
+	cp $< iso/boot/
+	echo 'set timeout=0' > iso/boot/grub/grub.cfg
+	echo 'set default=0' >> iso/boot/grub/grub.cfg
+	echo '' >> iso/boot/grub/grub.cfg
+	echo 'menuentry "My Operating System" {' >> iso/boot/grub/grub.cfg
+	echo '    multiboot /boot/mykernel.bin' >> iso/boot/grub/grub.cfg
+	echo '    boot' >> iso/boot/grub/grub.cfg
+	echo '}' >> iso/boot/grub/grub.cfg
+	grub-mkrescue --output=$@ iso
+	rm -rf iso
+
+
 clean:
 	rm -r $(objects) mykernel.bin

@@ -1,7 +1,6 @@
 #include "types.h"
-
-// #include "interrupts.h"
-
+#include "gdt.h"
+#include "interrupts.h"
 void print(const char *str){
     static uint16_t* VideoMemory = (uint16_t*)0xb8000;
     static uint8_t x=0, y=0;
@@ -50,17 +49,15 @@ extern "C" void callConstructors()
 extern "C" void kernelMain(void *multiboot_structure, uint32_t magic)
 {
 
-    print("hello worldffkffkkfffk12345\n");
-    print("hello worldffkffkkfffk12345\n");
-    print("hello worldffkffkkfffk12345\n");
-    print("hello worldffkffkkfffk12345\n");
-    print("hello worldffkffkkfffk12345");
-    print("hello worldffkffkkfffk12345");
-    print("hello worldffkffkkfffk12345");
-    print("hello worldffkffkkfffk12345");
 
-//     GlobalDescriptorTable gdt;
-//     InterruptManager interrupts(&gdt);
-//     interrupts.Activate();
+    print("hello worldffkffkkfffk12345");
+    print("hello worldffkffkkfffk12345");
+    print("hello worldffkffkkfffk12345");
+    print("hello worldffkffkkfffk12345");
+    print("hello worldffkffkkfffk12345");
+    print("hello worldffkffkkfffk12345");
+    GlobalDescriptorTable gdt;
+    InterruptManager interrupts(&gdt);
+    interrupts.Activate();
     while(1);
 }
